@@ -1,0 +1,33 @@
+# Normalise line endings: the project is Linux-only and every text file is LF.
+* text=auto eol=lf
+
+# Shell scripts must stay executable and LF.
+*.sh text eol=lf
+
+# Files that must never be line-ending converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.onnx binary
+*.pt binary
+*.safetensors binary
+*.bin binary
+*.parquet binary
+*.sqlite binary
+*.sqlite3 binary
+*.db binary
+*.zip binary
+*.gz binary
+*.xz binary
+*.zst binary
+
+# Generated dependency lock: keep diffs reviewable but do not count it as source.
+uv.lock linguist-generated=true

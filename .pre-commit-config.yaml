@@ -1,0 +1,59 @@
+# Fast, local checks. CI runs the same commands, so a green hook run means a
+# green pull request except for the slow test layers.
+#
+#   uv run pre-commit install
+#   uv run pre-commit run --all-files
+#
+# Hooks never reformat generated files: ruff format owns Python, and the
+# formatter is run again after ruff check --fix.
+default_language_version:
+  python: python3.14
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+        args: [--maxkb=512]
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: detect-private-key
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.6
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.11.0
+    hooks:
+      - id: shellcheck
+        args: [--severity=warning]
+
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy (strict, src only)
+        entry: uv run mypy
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: docs-freshness
+        name: documentation links and ADR index
+        entry: python3 tools/check_docs.py
+        language: system
+        pass_filenames: false
+      - id: unit-fast
+        name: fast unit tests (no UI, no benchmarks)
+        entry: uv run pytest tests/unit -q -m "not bench"
+        language: system
+        pass_filenames: false
+        stages: [pre-push]

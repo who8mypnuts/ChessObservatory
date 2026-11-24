@@ -211,6 +211,12 @@ tempCodeRunnerFile.py
 # Ruff stuff:
 .ruff_cache/
 
+# pytest-benchmark
+.benchmarks/
+
+# Model artifacts are downloaded, checksum-verified, never committed (ADR-0017).
+models/
+
 # PyPI configuration file
 .pypirc
 
