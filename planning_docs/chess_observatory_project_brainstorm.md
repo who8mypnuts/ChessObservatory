@@ -736,10 +736,10 @@ then progressively turn it into a research platform.
                           core and search engine  
 
   2                       Detailed evaluation     Understand positions
-                          decomposition           
+                          decomposition  
 
   3                       Tactical analysis and   Discover combinations
-                          dependency graphs       
+                          dependency graphs  
 
   4                       Position geometry and   Visualize chess
                           heat maps               mathematically
@@ -751,7 +751,7 @@ then progressively turn it into a research platform.
                           proofs                  results
 
   7                       Position similarity     Research chess at scale
-                          database                
+                          database  
 
   8                       Search observatory and  Build a complete
                           game autopsy            research environment

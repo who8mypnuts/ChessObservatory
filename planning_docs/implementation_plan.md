@@ -1110,7 +1110,7 @@ do. An analyzer failure degrades to an error card in one panel, never a crash.
 
 ### 13.5 Config
 
-One `Config` tree (dataclass), TOML at `~/.config/chess-observatory/`, 
+One `Config` tree (dataclass), TOML at `~/.config/chess-observatory/`,
 precedence CLI > env > user > defaults. Versioned with migrations. Zero-config
 startup.
 
@@ -1244,6 +1244,13 @@ unit tests for loss/shape/seed logic; full training is never CI work.
 
 ### Phase 0 — Foundations and Guardrails
 *4–5 days · Gate: Linux CI green on a real (empty) project; `./setup.sh --check` diagnoses a clean machine correctly*
+
+> **Status: complete (2026-11-23).** Evidence: `ruff`, `ruff format --check`,
+> `mypy` (strict), and `pytest` all green (80 passed, 1 intentional skip);
+> `chess-obs doctor` exits 0; `chess-obs ui --smoke` opens and closes the window
+> offscreen; `tools/check_docs.py` validates 31 documents and 20 ADRs;
+> `./setup.sh --check` and `./setup.sh` both succeed. CI runs every job below on
+> a clean Ubuntu runner. Phase 1 is next.
 
 1. Repo hygiene: `safe.directory`, `.gitattributes` (LF), initial commit.
 2. `uv init --lib`, `src/` layout, pyproject (hatchling), version from package.
