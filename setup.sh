@@ -45,10 +45,10 @@ WARNINGS=0
 if [[ -t 1 ]]; then
     C_RESET=$'\033[0m'; C_BOLD=$'\033[1m'; C_DIM=$'\033[2m'
     C_RED=$'\033[31m'; C_GREEN=$'\033[32m'; C_YELLOW=$'\033[33m'
-    C_BLUE=$'\033[34m'; C_CYAN=$'\033[36m'
+    C_CYAN=$'\033[36m'
 else
     C_RESET=""; C_BOLD=""; C_DIM=""; C_RED=""; C_GREEN=""
-    C_YELLOW=""; C_BLUE=""; C_CYAN=""
+    C_YELLOW=""; C_CYAN=""
 fi
 
 say()  { printf '%s\n' "$*"; }
@@ -337,7 +337,7 @@ fi
 # ---------------------------------------------------------------------------
 step "Verifying the installation"
 verify_python() {
-    uv run python - "$@" <<'PY'
+    uv run python - <<'PY'
 import sys
 print(f"  python  {sys.version.split()[0]}  ({sys.executable})")
 PY
@@ -412,17 +412,16 @@ say "    ${C_DIM}./setup.sh --run${C_RESET}"
 say ""
 say "${C_BOLD}Useful commands${C_RESET}"
 say ""
-say "    uv run chess-obs doctor                     # verify install, engines, data files"
-say "    uv run chess-obs perft 5                    # move-generation self-test"
-say "    uv run chess-obs analyze --fen \"<FEN>\"      # analysis report (text/JSON/Markdown)"
-say "    uv run chess-obs engines list               # reference engines found on PATH"
-say "    uv run --extra ml chess-obs models list     # ML models (optional)"
+say "    uv run chess-obs doctor          # full environment diagnosis"
+say "    uv run chess-obs config show     # effective configuration and its source"
+say "    uv run chess-obs ui              # open the workspace"
+say "    uv run chess-obs version         # version and install path"
 say ""
 say "${C_BOLD}First run${C_RESET}"
 say ""
-say "  · The workspace opens with the 'Research' preset; switch layouts in View ▸ Layouts."
-say "  · Change the look in View ▸ Theme (20 themes) and View ▸ Board palette."
-say "  · Everything works with ML disabled; enable it in Settings ▸ Machine Learning."
+say "  · This is the Phase 0 shell: it verifies Qt, fonts and the launch path."
+say "  · The designed workspace, panels and 20 themes arrive in Phase 6."
+say "  · Everything works with ML disabled; that is the default."
 say ""
 say "  Docs: docs/user/  ·  Troubleshooting: uv run chess-obs doctor"
 say ""
