@@ -133,20 +133,38 @@ def negamax(
     return _node(board, alpha, beta, depth, ply, ctx)[0]
 
 
+def iterative_deepening(
+    board: Board,
+    ctx: SearchContext,
+) -> tuple[float, list[int], list[tuple[int, float, list[int]]]]:
+    """Depth 1..max_depth search; returns the final score/PV plus per-depth history."""
+    final_score = 0.0
+    final_line: list[int] = []
+    history: list[tuple[int, float, list[int]]] = []
+    for depth in range(1, max(ctx.max_depth, 1) + 1):
+        score, line = search(board, ctx, depth=depth)
+        history.append((depth, score, line))
+        final_score = score
+        final_line = line
+    return (final_score, final_line, history)
+
+
 def search(
     board: Board,
     ctx: SearchContext,
     *,
     root_moves: Sequence[int] | None = None,
+    depth: int | None = None,
 ) -> tuple[float, list[int]]:
     """Full-window root search: best score for the side to move and the principal line."""
     moves = list(root_moves) if root_moves is not None else list(generate_legal(board))
     ordered = order_moves(board, moves)
     best_score = float("-inf")
     best_line: list[int] = []
+    node_depth = ctx.max_depth if depth is None else depth
     for move in ordered:
         board.make(move)
-        score, line = _node(board, float("-inf"), float("inf"), max(ctx.max_depth - 1, 0), 1, ctx)
+        score, line = _node(board, float("-inf"), float("inf"), max(node_depth - 1, 0), 1, ctx)
         board.unmake()
         score = -score
         if score > best_score:
