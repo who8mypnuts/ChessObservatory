@@ -1,46 +1,32 @@
 # Search
 
-> **Status:** the parameter registry and search arrive in Phase 2. Until then the
-> only search-related settings are defaults in the configuration file.
+> **Status:** generated from the parameter registry; regenerate rather than edit.
 
-The promise is "how long to examine, and how" — so search is a first-class,
-inspectable subsystem, not a settings dialog ([ADR-0002](adr/0002-hybrid-engine-federation.md)).
+The promise is "how long to examine, and how" — so search is a
+first-class, inspectable subsystem, not a settings dialog
+([ADR-0002](adr/0002-hybrid-engine-federation.md)).
 
-## Configuration available now
+## Parameters
 
-| Key | Default | Meaning |
-|-----|---------|---------|
-| `search.default_profile` | `standard` | Effort profile used when none is chosen. |
-| `search.threads` | `1` | Threads; 1 is the reproducible default. |
-| `search.hash_mb` | `256` | Transposition-table size. |
+| Name | Type | Default | Min | Max | Step | Tier | Determinism | Restart required | Documentation |
+|------|------|--------|-----|-----|------|------|-------------|----------------|----------------|
+| `search.delta_prune` | bool | true | - | - | 1 | basic | always | False | Enable quiescence delta pruning (Basic tier, deterministic). |
+| `search.hash_mb` | int | 256 | 16 | 1024 | 16 | basic | always | True | Transposition-table size in megabytes. |
+| `search.max_depth` | int | 32 | 1 | 100 | 1 | intermediate | always | False | Maximum search depth before stopping; 0 means unlimited depth. |
+| `search.multipv` | int | 1 | 1 | 32 | 1 | intermediate | always | False | Number of principal variations reported. |
+| `search.threads` | int | 1 | 1 | 16 | 1 | basic | hardware_dependent | True | Worker threads; 1 keeps the default node-deterministic search. |
 
-Set them in `~/.config/chess-observatory/config.toml`, with
-`CHESS_OBS_SEARCH_THREADS`, or per command with `--set search.threads=4`.
+## Reproducibility
 
-## What Phase 2 adds
-
-One parameter registry declares every knob once (name, type, range, default,
-tier, determinism, restart requirement, documentation). From it we generate:
-
-- CLI flags;
-- UCI `setoption` names and types;
-- settings controls, grouped Basic / Intermediate / Expert / Experimental;
-- this page (`docs/search.md` becomes generated, not hand-written);
-- configuration round-trip and migration tests.
-
-## Determinism
-
-Every parameter is labelled:
-
-- `ALWAYS` — depth, node limit;
-- `TIME_DEPENDENT` — movetime;
-- `HARDWARE_DEPENDENT` — threads, SIMD paths, GPU inference.
+- `always` — depth and node limit.
+- `time_dependent` — movetime.
+- `hardware_dependent` — threads, SIMD paths, GPU inference.
 
 The UI shows a **Reproducible** badge only when the active combination is
-deterministic, and reproducibility records state which parameters prevent replay
-([ADR-0012](adr/0012-determinism-modes.md)).
+deterministic, and reproducibility records state which parameters prevent
+replay of a search.
 
-## Effort profiles
+## Related
 
-`Quick`, `Standard`, `Deep`, `Exhaustive` and `Proof` are named expansions of
-analyzer budgets and search limits. `Proof` never uses GPU inference.
+- [Position API](position-api.md) — the rules core this engine searches.
+- [ADR-0002](adr/0002-hybrid-engine-federation.md) — the hybrid engine contract.
