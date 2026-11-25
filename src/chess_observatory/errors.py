@@ -69,6 +69,11 @@ class InvalidFenError(CoreError):
     default_hint = "Check the six FEN fields: placement, side, castling, en passant, clocks."
 
 
+class InvalidSanError(CoreError):
+    code = "core.invalid_san"
+    default_hint = "Check the SAN move, including capture, disambiguation and promotion markers."
+
+
 class InvalidPgnError(CoreError):
     code = "core.invalid_pgn"
     default_hint = "Check the PGN headers and that moves are legal from the start position."
