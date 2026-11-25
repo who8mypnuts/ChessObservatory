@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from chess_observatory.core.attacks import in_check, see_ge
 from chess_observatory.core.make import Board
@@ -12,6 +12,7 @@ from chess_observatory.core.moves import MoveFlags, move_flags, move_is_promotio
 from chess_observatory.core.position import BoardView
 from chess_observatory.search.limits import SearchLimits
 from chess_observatory.search.ordering import order_moves
+from chess_observatory.search.trace import DepthRecord, SearchTrace
 from chess_observatory.search.tt import Bound, TranspositionTable, TTEntry
 
 MATE_SCORE = 1_000_000.0
@@ -26,6 +27,7 @@ class SearchContext:
     evaluate: Callable[[BoardView], float]
     is_draw: Callable[[BoardView], bool] | None = None
     max_depth: int = 0
+    trace: SearchTrace | None = None
 
 
 def qsearch(board: Board, alpha: float, beta: float, ply: int, ctx: SearchContext) -> float:
@@ -60,6 +62,8 @@ def qsearch(board: Board, alpha: float, beta: float, ply: int, ctx: SearchContex
         if best > alpha:
             alpha = best
         if alpha >= beta:
+            if ctx.trace is not None:
+                ctx.trace.cutoffs += 1
             break
     if best == float("-inf"):
         best = stand_pat
@@ -83,6 +87,10 @@ def _node(
     """Negamax alpha-beta with transposition table and principal-line extraction."""
     if ctx.is_draw is not None and ctx.is_draw(board):
         return (0.0, [])
+    if ctx.trace is not None:
+        ctx.trace.nodes += 1
+    if depth <= 0 and ctx.trace is not None:
+        ctx.trace.leaf_evals += 1
     tt = ctx.tt.lookup(board.key, depth) if depth > 0 else None
     if tt is not None:
         if tt.flag is Bound.EXACT:
@@ -141,8 +149,34 @@ def iterative_deepening(
     final_score = 0.0
     final_line: list[int] = []
     history: list[tuple[int, float, list[int]]] = []
+    trace = ctx.trace if ctx.trace is not None else SearchTrace()
+    working = replace(ctx, trace=trace)
     for depth in range(1, max(ctx.max_depth, 1) + 1):
-        score, line = search(board, ctx, depth=depth)
+        before = (
+            trace.nodes,
+            trace.cutoffs,
+            trace.leaf_evals,
+            ctx.tt.stats[1],
+            ctx.tt.stats[2],
+        )
+        score, line = search(board, working, depth=depth)
+        nodes = trace.nodes - before[0]
+        cutoffs = trace.cutoffs - before[1]
+        leaf_evals = trace.leaf_evals - before[2]
+        tt_hits = ctx.tt.stats[1] - before[3]
+        tt_misses = ctx.tt.stats[2] - before[4]
+        trace.add(
+            DepthRecord(
+                depth=depth,
+                score=score,
+                nodes=nodes,
+                cutoffs=cutoffs,
+                tt_hits=tt_hits,
+                tt_misses=tt_misses,
+                leaf_evals=leaf_evals,
+                pv=tuple(line),
+            )
+        )
         history.append((depth, score, line))
         final_score = score
         final_line = line
