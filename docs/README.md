@@ -7,7 +7,7 @@ it*.
 ## Start here
 
 - [Architecture](architecture.md) — layering, dependency rules, threading.
-- [Position API](position-api.md) — the rules-core surface (Phase 1).
+- [Position API](position-api.md) — the frozen rules-core surface.
 - [Search](search.md) — every engine parameter and what it does (Phase 2).
 - [Metrics](metrics.md) — the feature registry reference (Phase 4).
 - [Models](models.md) — model cards, gates, trust labels (Phase 15).

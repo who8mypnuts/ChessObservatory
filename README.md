@@ -7,10 +7,11 @@ works, not just who is winning. It pairs an inspectable analytical engine with a
 first-class federation of external UCI engines, and it never confuses a measured
 fact with a guess.
 
-> **Status: Phase 0 — foundations and guardrails.** The application shell, CLI,
-> configuration, diagnostics and test/CI scaffolding are real and tested. The
-> rules core arrives in Phase 1; the designed workspace and 20 themes in Phase 6.
-> See the [implementation plan](planning_docs/implementation_plan.md).
+> **Status: Phase 1 — rules core.** The application shell, CLI, configuration,
+> diagnostics and test/CI scaffolding are real and tested, and the bitboard rules
+> core now plays, edits, reads and writes chess. Search arrives in Phase 2; the
+> designed workspace and 20 themes in Phase 6. See the
+> [implementation plan](planning_docs/implementation_plan.md).
 
 ## Quick start
 
@@ -69,6 +70,16 @@ uv run pytest tests/bench -q
 python3 tools/check_docs.py          # links, ADR index, required docs
 ```
 
+The rules core has its own gates: a differential run against `python-chess` and
+a recorded performance baseline.
+
+```bash
+uv run python tools/differential.py --games 2000    # CI gate
+uv run python tools/differential.py --games 100000  # local gate, takes a while
+uv run python tools/bench_core.py                   # measure
+uv run python tools/bench_core.py --check           # compare with baseline.json
+```
+
 The Qt UI can be smoke-tested without a display:
 
 ```bash
@@ -82,12 +93,12 @@ Architectural rules are enforced by tests, not convention: Qt only in `ui/`,
 ## Project layout
 
 ```text
-src/chess_observatory/   package: CLI, config, health, serialization, UI shell
+src/chess_observatory/   package: rules core, CLI, config, health, serialization, UI shell
 tests/                   unit, property, differential, UI, benchmark, fuzz, chaos
 docs/                    architecture, contracts, user guide, gallery, 20 ADRs
 assets/                  licensing ledger (every bundled asset is listed)
 planning_docs/           the authoritative implementation plan
-tools/                   repository checks (documentation freshness)
+tools/                   docs check, differential harness, performance baseline
 setup.sh                 Linux bootstrap: diagnose, install, verify, launch
 ```
 

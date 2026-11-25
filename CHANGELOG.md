@@ -6,6 +6,39 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+Phase 1: rules core. The package can now represent, generate, edit, parse and
+serialise chess positions without a runtime chess dependency.
+
+### Added
+
+- Bitboard rules core in `chess_observatory.core`: squares, pieces, packed moves,
+  immutable `Position`, incremental Zobrist hashing, slider/leaper attacks, the
+  full `AttackMap` (attackers, pins, checks, discovered checks, x-ray, safe
+  squares), SEE, and a `BoardView` shared by immutable and mutable boards.
+- Legal move generation for every piece type, castling, en passant and
+  promotions, with a direct legality filter (checkers, pin rays, king-danger
+  mask); `perft` and `perft_divide`.
+- Mutable `Board` with make/unmake, incremental keys and optional full
+  re-validation.
+- Counterfactual edit primitives returning a `LegalityReport` that names every
+  relaxed rule; experimental positions remain first-class.
+- Strict and permissive FEN parsing with precise errors, and canonical emission
+  that normalises the en-passant field.
+- Canonical SAN generation and a tolerant parser.
+- Immutable PGN model with headers, comments, NAGs, nested RAVs, clock/eval
+  annotations, encoding handling, streaming reader and canonical emitter.
+- Differential harness against `python-chess` (`tools/differential.py`, 2k games
+  in CI, 100k locally) and a recorded performance baseline
+  (`tools/bench_core.py`, `tests/bench/baseline.json`).
+- Phase 1 test suites: perft (six published positions), random-game
+  differential, FEN/SAN/PGN round-trips, edits, attack maps, Zobrist, and the
+  make/unmake invariants.
+
+### Changed
+
+- `InvalidSanError` added to the error taxonomy (`core.invalid_san`).
+- `docs/position-api.md` is now the landed, frozen core contract.
+
 ## [0.1.0.dev0] — 2026-11-23
 
 Phase 0: foundations and guardrails. No chess logic yet; the point is that every

@@ -102,5 +102,5 @@ to an existing contract rather than inventing a parallel one. Implemented so far
 | UI shell | `ui/` | offscreen window test |
 | Guards | `tests/` | import graph, asset ledger, docs freshness |
 
-The next layer to land is the rules core in Phase 1; see
-[Position API](position-api.md).
+The rules core landed in Phase 1; its frozen contract is
+[Position API](position-api.md). Search is the next layer.

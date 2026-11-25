@@ -1250,7 +1250,7 @@ unit tests for loss/shape/seed logic; full training is never CI work.
 > `chess-obs doctor` exits 0; `chess-obs ui --smoke` opens and closes the window
 > offscreen; `tools/check_docs.py` validates 31 documents and 20 ADRs;
 > `./setup.sh --check` and `./setup.sh` both succeed. CI runs every job below on
-> a clean Ubuntu runner. Phase 1 is next.
+> a clean Ubuntu runner. Phase 1 is complete; see below.
 
 1. Repo hygiene: `safe.directory`, `.gitattributes` (LF), initial commit.
 2. `uv init --lib`, `src/` layout, pyproject (hatchling), version from package.
@@ -1298,6 +1298,17 @@ unit tests for loss/shape/seed logic; full training is never CI work.
 
 ### Phase 1 — Rules Core
 *10–14 days · Gate: perft exact, zero differential mismatches*
+
+> **Status: complete (2026-11-24).** Evidence: perft is exact for the six
+> published positions at depths 1–3, for start/kiwipete/positions 3–6 at depth
+> 4, and for start at depth 5 (slow); the 2,000-game differential gate passes
+> in 6:15, and a 100,000-game local soak compared 3,991,066 positions and
+> 117,883,146 legal moves with zero mismatches; branch coverage in `core` is
+> 99 % (gate 95 %); `ruff`, `ruff format --check` and `mypy` strict are clean;
+> 314 fast unit tests, 3 hypothesis property tests, 8 differential tests and
+> the benchmark suite pass; `tools/bench_core.py` records perft, make/unmake,
+> attack map, SEE, SAN and FEN throughput in `tests/bench/baseline.json`.
+> `docs/position-api.md` is frozen. Phase 2 is next.
 
 1. `squares.py`: 0 = a1 … 63 = h8; file/rank helpers; masks; shifts;
    popcount/lsb/msb; edge masks; knight/king tables; ray tables; `BETWEEN`,
