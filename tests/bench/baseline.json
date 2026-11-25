@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "python": "3.14.4",
+  "platform": "Linux-7.0.0-44-generic-x86_64-with-glibc2.43",
+  "metrics": {
+    "perft.start.d4": {
+      "value": 205329.4,
+      "unit": "nodes/s",
+      "note": "perft from the starting position at depth 4"
+    },
+    "make_unmake.kiwipete": {
+      "value": 74827.5,
+      "unit": "move pairs/s",
+      "note": "make then unmake every legal move in kiwipete"
+    },
+    "attack_map.middlegame": {
+      "value": 712.2,
+      "unit": "maps/s",
+      "note": "cold attack map build (cache cleared each time)"
+    },
+    "see.kiwipete": {
+      "value": 45819.1,
+      "unit": "moves/s",
+      "note": "static exchange evaluation over every legal capture"
+    },
+    "san.kiwipete": {
+      "value": 3214.1,
+      "unit": "moves/s",
+      "note": "canonical SAN generation for every legal move"
+    },
+    "fen.middlegame": {
+      "value": 75587.5,
+      "unit": "positions/s",
+      "note": "canonical FEN emission"
+    }
+  }
+}
